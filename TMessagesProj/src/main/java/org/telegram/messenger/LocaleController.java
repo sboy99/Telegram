@@ -1356,6 +1356,10 @@ public class LocaleController {
         if (value == null) {
             value = "LOC_ERR:" + key;
         }
+
+        if(value.equals("Telegram")) {
+            value = getString("RabbleAppBarName", R.string.RabbleAppBarName);
+        }
         return value;
     }
 

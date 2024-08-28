@@ -312,6 +312,11 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter {
         UserConfig me = UserConfig.getInstance(UserConfig.selectedAccount);
         boolean showDivider = false;
         items.add(new Item(16, LocaleController.getString(R.string.MyProfile), R.drawable.left_status_profile));
+        
+        items.add(new Item(99, LocaleController.getString(R.string.Wallet), R.drawable.rabble_wallet));
+        items.add(new Item(98, LocaleController.getString(R.string.Feed), R.drawable.rabble_feed));
+        items.add(new Item(97, LocaleController.getString(R.string.DappStore), R.drawable.dapp_store));
+        
         if (me != null && me.isPremium()) {
             if (me.getEmojiStatus() != null) {
                 items.add(new Item(15, LocaleController.getString("ChangeEmojiStatus", R.string.ChangeEmojiStatus), R.drawable.msg_status_edit));

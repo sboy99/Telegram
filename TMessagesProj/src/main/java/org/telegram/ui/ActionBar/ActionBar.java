@@ -454,6 +454,7 @@ public class ActionBar extends FrameLayout {
                 ((AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable) lastRightDrawable).setParentView(titleTextView[0]);
             }
             titleTextView[0].setRightDrawableOnClick(rightDrawableOnClickListener);
+            changeActionBarTitleColor(0);
         }
         fromBottom = false;
     }
@@ -474,8 +475,10 @@ public class ActionBar extends FrameLayout {
         }
         titleColorToSet = color;
         titleTextView[0].setTextColor(color);
+        changeActionBarTitleColor(0);
         if (titleTextView[1] != null) {
             titleTextView[1].setTextColor(color);
+            changeActionBarTitleColor(1);
         }
     }
 
@@ -1494,6 +1497,7 @@ public class ActionBar extends FrameLayout {
             titleTextView[0].setDrawablePadding(dp(4));
             titleTextView[0].setRightDrawable(rightDrawableToSet);
             titleTextView[0].setRightDrawableOnClick(rightDrawableOnClickListener);
+            changeActionBarTitleColor(0);
             if (rightDrawableToSet instanceof AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable) {
                 ((AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable) rightDrawableToSet).setParentView(titleTextView[0]);
             }
@@ -1514,6 +1518,8 @@ public class ActionBar extends FrameLayout {
             titleTextView[1].setDrawablePadding(dp(4));
             titleTextView[1].setRightDrawable(rightDrawableToSet);
             titleTextView[1].setRightDrawableOnClick(rightDrawableOnClickListener);
+            changeActionBarTitleColor(1);
+
             if (rightDrawableToSet instanceof AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable) {
                 ((AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable) rightDrawableToSet).setParentView(titleTextView[1]);
             }
@@ -1554,6 +1560,18 @@ public class ActionBar extends FrameLayout {
             }).start();
         }
         titleActionRunnable = action != null ? action : lastRunnable;
+    }
+
+    private void changeActionBarTitleColor(int i) {
+        if (isTitleRabble(i)) {
+            titleTextView[i].setTextColor(Color.rgb(8,247,175));
+            titleTextView[i].setTextSize(26);
+            titleTextView[i].setTypeface(AndroidUtilities.getTypeface(AndroidUtilities.DEFAULT_NORMAL_EXTRA_BOLD_FONT_FILENAME));
+        }
+    }
+
+    private boolean isTitleRabble(int i) {
+        return titleTextView[i].getText().toString().equals(LocaleController.getString("RabbleAppBarName", R.string.RabbleAppBarName));
     }
 
     public boolean isSearchFieldVisible() {

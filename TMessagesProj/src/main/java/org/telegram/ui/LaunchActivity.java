@@ -651,7 +651,20 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                     args.putLong("user_id", UserConfig.getInstance(currentAccount).getClientUserId());
                     presentFragment(new ChatActivity(args));
                     drawerLayoutContainer.closeDrawer(false);
-                } else if (id == 12) {
+                } 
+                else if (id == 99) {
+                    presentFragment(new RabblewalletActivity());
+                    drawerLayoutContainer.closeDrawer(false);
+                }
+                else if (id == 98) {
+                    presentFragment(new FeedActivity());
+                    drawerLayoutContainer.closeDrawer(false);
+                }
+                else if (id == 97) {
+                    presentFragment(new DappActivity());
+                    drawerLayoutContainer.closeDrawer(false);
+                }
+                else if (id == 12) {
                     if (Build.VERSION.SDK_INT >= 23) {
                         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             presentFragment(new ActionIntroActivity(ActionIntroActivity.ACTION_TYPE_NEARBY_LOCATION_ACCESS));

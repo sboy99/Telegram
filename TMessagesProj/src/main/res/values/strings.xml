@@ -30,6 +30,14 @@
     <string name="DidNotGetTheCodeInfo">If you didn\'t get the code by SMS or call, please check your **cellular data settings** and phone number:\n\n**%1$s**\n\nYour remaining options are to try another number or to contact Telegram Support. Tap **Help** to send us the technical details so that we can identify the problem.</string>
     <string name="DidNotGetTheCodeHelpButton">Help</string>
     <string name="DidNotGetTheCodeEditNumberButton">Edit number</string>
+
+        <!-- Rabble View -->
+    <string name="GetStarted">Get Started</string>
+    <string name="Wallet">Wallet</string>
+    <string name="Feed">Feed</string>
+    <string name="DappStore">Dapp Store</string>
+    <string name="RabbleFeed">Feed</string>
+
     <!--code enter view-->
     <string name="YourCode">Phone verification</string>
     <string name="SentSmsCode">We’ve sent an SMS with an activation code to your phone **%1$s**.</string>

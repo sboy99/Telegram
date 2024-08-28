@@ -1667,6 +1667,31 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
     private boolean pendingSwitchingAccount;
 
     private void onAuthSuccess(TLRPC.TL_auth_authorization res, boolean afterSignup) {
+
+        // hint : access token and refresh token generation HTTP call request
+        TLRPC.User user = res.user;
+        JSONObject jsonObject = new JSONObject();
+        String jsonString="";
+
+        String rabble_Name = UserObject.getUserName(user);
+        String rabble_Username = UserObject.getPublicUsername(user);
+        String rabble_Userid = String.valueOf(user.id);
+
+        try {
+            jsonObject.put("telegramId", rabble_Userid);
+            jsonObject.put("username", rabble_Username);
+            jsonObject.put("fullName", rabble_Name);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            jsonString = jsonObject.toString(4);
+        } catch (Exception e) {
+            jsonString = jsonObject.toString();
+        }
+        callApi(getContext(),jsonObject);
+        
         MessagesController.getInstance(currentAccount).cleanup();
         ConnectionsManager.getInstance(currentAccount).setUserId(res.user.id);
         UserConfig.getInstance(currentAccount).clearConfig();
@@ -1697,6 +1722,47 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
         MediaDataController.getInstance(currentAccount).loadStickersByEmojiOrName(AndroidUtilities.STICKERS_PLACEHOLDER_PACK_NAME, false, true);
 
         needFinishActivity(afterSignup, res.setup_password_required, res.otherwise_relogin_days);
+    }
+
+    // hint : access token and refresh token generation api call function
+    public void callApi(Context context,JSONObject inputJson) {
+        String url = "https://api-test.pluto.buidl.so/wallets";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST, url, inputJson,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            showDialog(context, String.valueOf(response));
+
+                            String accessToken = response.getString("accessToken");
+                            String refreshToken = response.getString("refreshToken");
+
+                            SharedPreferences sharedPreferences = context.getSharedPreferences("RabbleWallet", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("accessToken", accessToken);
+                            editor.putString("refreshToken", refreshToken);
+                            editor.apply();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle error
+                        error.printStackTrace();
+                    }
+                }
+        );
+
+        // Add the request to the RequestQueue.
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(jsonObjectRequest);
     }
 
     private void fillNextCodeParams(Bundle params, TLRPC.TL_account_sentEmailCode res) {

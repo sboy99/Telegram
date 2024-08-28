@@ -14,6 +14,7 @@ import static org.telegram.messenger.AndroidUtilities.lerp;
 import static org.telegram.messenger.LocaleController.getString;
 import static org.telegram.ui.LaunchActivity.getLastFragment;
 
+import org.telegram.ui.RabblewalletActivity;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -2646,6 +2647,118 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                 }
             });
 
+            //hint : object createation and object relationship
+
+            try {
+                TLRPC.Chat chat = parentFragment.getCurrentChat();
+                TLRPC.User user = parentFragment.getCurrentUser();
+
+                boolean isBot = user != null && user.bot;
+                boolean isAdmin = false;
+                String rabbble_chat_type = "";
+                String jsonString = "";
+                JSONObject jsonObject = new JSONObject();
+                String rabble_FromUserid = String.valueOf(UserConfig.getInstance(currentAccount).getClientUserId());
+
+                if (user != null || !ChatObject.isChannel(chat) && !chat.megagroup) {
+                    if (!isBot) {
+                        rabbble_chat_type = "User";
+                        String rabble_toName = UserObject.getUserName(user);
+                        String rabble_toUsername = UserObject.getPublicUsername(user);
+                        String rabble_toUserid = String.valueOf(user.id);
+                        String rabble_ifcontact_phoneno = String.valueOf(user.phone);
+                        try {
+                            jsonObject.put("type", rabbble_chat_type);
+                            jsonObject.put("toId", rabble_toUserid);
+                            jsonObject.put("fromId", rabble_FromUserid);
+                            jsonObject.put("toName", rabble_toName);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonString = jsonObject.toString(4); // 4 is the number of spaces to indent
+                        } catch (Exception e) {
+                            jsonString = jsonObject.toString(); // Fallback in case of exception
+                        }
+                        showDialog(context, jsonString);
+                    } else {
+                        rabbble_chat_type = "Bot";
+                        String rabble_toName = UserObject.getUserName(user);
+                        String rabble_toUsername = UserObject.getPublicUsername(user);
+                        String rabble_toUserid = String.valueOf(user.id);
+                        String rabble_ifcontact_phoneno = String.valueOf(user.phone);
+                        //Toast.makeText(context, "" + rabble_ifcontact_phoneno, Toast.LENGTH_SHORT).show();
+                        try {
+                            jsonObject.put("type", rabbble_chat_type);
+                            jsonObject.put("toId", rabble_toUserid);
+                            jsonObject.put("fromId", rabble_FromUserid);
+                            jsonObject.put("toName", rabble_toName);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            jsonString = jsonObject.toString(4); // 4 is the number of spaces to indent
+                        } catch (Exception e) {
+                            jsonString = jsonObject.toString(); // Fallback in case of exception
+                        }
+
+                        showDialog(context, jsonString);
+                    }
+                } else if (chat.megagroup) {
+                    String rabble_groupId = String.valueOf(chat.id);
+                    String rabble_groupName = String.valueOf(chat.title);
+                    TLRPC.Chat group_chat = accountInstance.getMessagesController().getChat(chat.id);
+                    String rabble_groupMemberCount = String.valueOf(group_chat.participants_count);
+
+                    if (ChatObject.hasAdminRights(group_chat)) {
+                        isAdmin = true;
+                    }
+                    try {
+                        jsonObject.put("type", "Group");
+                        jsonObject.put("groupId", rabble_groupId);
+                        jsonObject.put("groupName", rabble_groupName);
+                        jsonObject.put("fromId", rabble_FromUserid);
+                        jsonObject.put("role", isAdmin ? "Admin" : "Member");
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        jsonString = jsonObject.toString(4); // 4 is the number of spaces to indent
+                    } catch (Exception e) {
+                        jsonString = jsonObject.toString(); // Fallback in case of exception
+                    }
+                    showDialog(context, jsonString);
+                } else {
+                    String rabble_channelId = String.valueOf(chat.id);
+                    String rabble_channelName = String.valueOf(chat.title);
+                    TLRPC.Chat channel_chat = accountInstance.getMessagesController().getChat(chat.id);
+
+                    if (ChatObject.hasAdminRights(channel_chat)) {
+                        isAdmin = true;
+                    }
+                    try {
+                        jsonObject.put("type", "Channel");
+                        jsonObject.put("channelId", rabble_channelId);
+                        jsonObject.put("channelName", rabble_channelName);
+                        jsonObject.put("fromId", rabble_FromUserid);
+                        jsonObject.put("role", isAdmin ? "Admin" : "Member");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        jsonString = jsonObject.toString(4); // 4 is the number of spaces to indent
+                    } catch (Exception e) {
+                        jsonString = jsonObject.toString(); // Fallback in case of exception
+                    }
+                    showDialog(context, jsonString);
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+            //hint : object createation and object relationship end
+            
             attachButton = new ImageView(context);
             attachButton.setScaleType(ImageView.ScaleType.CENTER);
             attachButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.MULTIPLY));

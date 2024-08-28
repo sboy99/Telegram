@@ -2753,6 +2753,20 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                     }
                     showDialog(context, jsonString);
                 }
+
+                // hint : wallet icon showing for only user in the button chat bar and it also one of UI task
+
+                if ((user != null || !ChatObject.isChannel(chat) && !chat.megagroup) && !isBot) {
+                        ImageView walletBtn = new ImageView(context);
+                        walletBtn.setScaleType(ImageView.ScaleType.CENTER);
+                        walletBtn.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_messagePanelIcons), PorterDuff.Mode.MULTIPLY));
+                        walletBtn.setImageResource(R.drawable.rabble_wallet);
+                        attachLayout.addView(walletBtn, LayoutHelper.createLinear(48, 48));
+                        walletBtn.setOnClickListener(v -> {
+                        parentFragment.presentFragment(new RabblewalletActivity());
+                    });
+                }
+                
             }
             catch (Exception e){
                 e.printStackTrace();
